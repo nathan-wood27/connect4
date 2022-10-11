@@ -1,28 +1,58 @@
-/* game board table */
-
-#board td {
-  width: 50px;
-  height: 50px;
-  border: solid 1px #666;
+div#board {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.column {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction:column;
+  position: relative;
+  overflow: hidden;
+}
+.cell {
+  height: 100px;
+  width: 100px;
+}
+.top-row {
+  border: 1px dashed;
+  width: 98px;
+  height: 98px;
+  cursor:pointer;
+}
+.top-row:hover {
+  background-color: aliceblue;
+}
+.cell:not(.top-row){
+  pointer-events: none;
 }
 
-/* pieces are div within game table cells: draw as colored circles */
-
-.piece {
-  /* TODO: make into circles */
-  margin: 5px;
-  width: 80%;
-  height: 80%;
+.game-piece {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  z-index: -1;
+  transition: top 1000ms;
 }
 
-/* TODO: make pieces red/blue,  depending on player 1/2 piece */
-
-/* column-top is table row of clickable areas for each column */
-
-#column-top td {
-  border: dashed 1px lightgray;
+.game-piece.first {
+  top: 600px;
+}
+.game-piece.second {
+  top: 500px;
+}
+.game-piece.third {
+  top: 400px;
+}
+.game-piece.fourth {
+  top: 300px;
+}
+.game-piece.fifth {
+  top: 200px;
+}
+.game-piece.sixth {
+  top: 100px;
 }
 
-#column-top td:hover {
-  background-color: gold;
-}
+.column.no-room {pointer-events:none;}
