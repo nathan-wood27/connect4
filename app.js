@@ -6,11 +6,18 @@
 */
 
 let virtualBoard = {col1:0,col2:0,col3:0,col4:0,col5:0,col6:0,col7:0};
-const width = 7;
-const height = 6;
+const boardWidth = 7;
+const boardHeight = 6;
 let board = [];
+const playerDispWrapper = document.createElement('div');
+const currentPlayerP = document.createElement('p');
 const playerDisp = document.createElement('p');
-playerDisp.innerText = 'Current Player: Red';
+playerDispWrapper.classList.add('current-player');
+playerDisp.classList.add('player','blue-player');
+currentPlayerP.innerText = 'Current Player';
+playerDisp.innerText = 'Blue';
+playerDispWrapper.append(currentPlayerP);
+playerDispWrapper.append(playerDisp);
 const cssMap = new Map();
 cssMap.set(2,'second');
 cssMap.set(3,'third');
@@ -23,12 +30,21 @@ cssMap.set('col3',2);
 cssMap.set('col4',3);
 cssMap.set('col5',4);
 cssMap.set('col6',5);
-cssMap.set('col7',0);
-let currPlayer = 1; // active player: 1 or 2
+cssMap.set('col7',6);
+let currPlayer = 0; // active player: 1 or 2
+let lastPlayer = 1;
+for(let y = 0; y < boardHeight; y++){
+    board.push([]);
+    for(let x = 0; x < boardWidth; x++){
+        board[y].push(null);
+    }
+}
 
 const htmlGame = document.getElementById('game');
 const htmlBoard = document.getElementById('board');
-htmlGame.append(playerDisp);
+const winStateText = document.getElementById('win-text');
+const tieState = document.getElementById('tie-state');
+htmlGame.append(playerDispWrapper);
 
 htmlBoard.addEventListener('click', handleClick);
 
@@ -36,19 +52,28 @@ htmlBoard.addEventListener('click', handleClick);
 
 function handleClick(evt) {
 // get x from ID of clicked cell
+    let clickedItemClassList = evt.target.classList;
     let parent = evt.target.parentElement;
     let parentId = evt.target.parentElement.id;
+    if(clickedItemClassList.contains('top-row')){
+        runGame(parent,parentId);
+    } else if (clickedItemClassList.contains('play-again')){
+        startGameOver(parent);
+    } 
+    
+}
+
+let runGame = (parent,parentId) => {
+    let playerTitle = ['Red','Blue'];
 
     if(virtualBoard[parentId] <= 5){
         let circle = document.createElement('img');
         if (currPlayer === 1){
             circle.setAttribute('src','assets/red-circle.svg');
-            currPlayer = 2;
-            playerDisp.innerText = 'Current Player: Blue';
+            playerDisp.innerText = playerTitle[currPlayer];
         } else {
             circle.setAttribute('src','assets/blue-circle.svg');
-            currPlayer = 1;
-            playerDisp.innerText = 'Current Player: Red';
+            playerDisp.innerText = playerTitle[currPlayer];
         }
         circle.classList.add('game-piece');
         circle.setAttribute('alt','Circle');
@@ -57,13 +82,13 @@ function handleClick(evt) {
         if(virtualBoard[parentId] === 0){
             virtualBoard[parentId] = 1;
             setTimeout(() => {
-                circle.classList.add('first');
+                circle.classList.add('first',parentId);
             },100);  
         }
         else {
             virtualBoard[parentId] = virtualBoard[parentId] + 1;
             setTimeout(() => {
-                circle.classList.add(cssMap.get(virtualBoard[parentId]));
+                circle.classList.add(cssMap.get(virtualBoard[parentId]),parentId);
             },100); 
             if(virtualBoard[parentId] === 6) {
                 parent.classList.add('no-room');
@@ -71,16 +96,23 @@ function handleClick(evt) {
             }
         }
     }
-    board[virtualBoard[parentId]-1] = [currPlayer];
-    console.log(board);
+    
+    board[virtualBoard[parentId]-1][cssMap.get(parentId)] = currPlayer;
+    
 
     // check for win
     if (checkForWin()) {
-        console.log(true);
+        winStateText.innerText = `${playerTitle[lastPlayer]} Wins!!`;
+        playerDisp.innerText = `${playerTitle[lastPlayer]} Wins!!`;
+        winStateText.parentElement.classList.add('show');
     }
     else if(checkForTie(virtualBoard) === true){
-        console.log(true);
+        tieState.classList.add('show');
     }
+    else{
+        [currPlayer,lastPlayer] = [lastPlayer,currPlayer];
+        playerDisp.classList.toggle('blue-player');
+    }    
 }
 
 let checkForWin = () => {
@@ -92,17 +124,17 @@ let checkForWin = () => {
         return cells.every(
             ([y, x]) =>
             y >= 0 &&
-            y < height&&
+            y < boardHeight &&
             x >= 0 &&
-            x < width &&
+            x < boardWidth &&
             board[y][x] === currPlayer
         );
     }
     
     // TODO: read and understand this code. Add comments to help you.
 
-    for (var y = 0; y < height; y++) {
-        for (var x = 0; x < width; x++) {
+    for (var y = 0; y < boardHeight; y++) {
+        for (var x = 0; x < boardWidth; x++) {
             var horiz = [[y, x], [y, x + 1], [y, x + 2], [y, x + 3]];
             var vert = [[y, x], [y + 1, x], [y + 2, x], [y + 3, x]];
             var diagDR = [[y, x], [y + 1, x + 1], [y + 2, x + 2], [y + 3, x + 3]];
@@ -122,5 +154,23 @@ let checkForTie = (obj) => {
     }
 }
 
-
+let startGameOver = (buttonParent) => {
+    board = [];
+    playerDisp.innerText = 'Blue';
+    playerDisp.classList.add('blue-player');
+    for(let y = 0; y < boardHeight; y++){
+        board.push([]);
+        for(let x = 0; x < boardWidth; x++){
+            board[y].push(null);
+        }
+    }
+    virtualBoard = {col1:0,col2:0,col3:0,col4:0,col5:0,col6:0,col7:0};
+    let pieces = document.querySelectorAll('.game-piece');
+    pieces.forEach(piece => {
+        piece.remove();      
+    });
+    currPlayer = 0; 
+    lastPlayer = 1;
+    buttonParent.classList.remove('show');   
+}
 

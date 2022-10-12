@@ -2,6 +2,11 @@ div#board {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 700px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 30px;
 }
 .column {
   display: flex;
@@ -20,6 +25,7 @@ div#board {
   width: 98px;
   height: 98px;
   cursor:pointer;
+  background-color:#fff;
 }
 .top-row:hover {
   background-color: aliceblue;
@@ -30,7 +36,7 @@ div#board {
 
 .game-piece {
   position: absolute;
-  top: -100px;
+  top: 0;
   left: 0;
   z-index: -1;
   transition: top 1000ms;
@@ -56,3 +62,57 @@ div#board {
 }
 
 .column.no-room {pointer-events:none;}
+.current-player {text-align:center;border: 1px solid #000;border-radius: 15px;background-color: rgba(0,0,0,0.3);overflow: hidden;}
+.current-player p {
+  padding: 20px;
+  font-size: 30px;
+  font-family: sans-serif;
+  color: #fff;
+  margin: 0;
+}
+
+p.player.blue-player {
+  background-color: #1520a6;
+}
+
+.player {
+  background-color: #b80f0a;
+}
+.hidden {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.3);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  top: -700px;
+  left: -700px;
+  transition:top 300ms,left 300ms;
+}
+.hidden.show {top:0;left:0;}
+
+
+div#game {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.hidden p {
+  color: #fff;
+  font-size: 80px;
+  margin: 0;
+  font-family: sans-serif;
+}
+
+.btn {display: inline-block;border:1px solid #fff;background-color: #fff;color:#000;padding:5px 15px;font-size:16px;cursor:pointer;margin: 5px 0;transition: all 300ms;}
+.btn.btn-primary {border:1px solid #fff;background-color: transparent; color:#fff;}
+
+.btn.btn-primary:hover, .btn.btn-primary:focus {
+  letter-spacing: 1px;
+}
