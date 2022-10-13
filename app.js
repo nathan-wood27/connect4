@@ -107,6 +107,8 @@ let runGame = (parent,parentId) => {
         winStateText.parentElement.classList.add('show');
     }
     else if(checkForTie(virtualBoard) === true){
+        playerDisp.innerText = "It's A Tie!!";
+        playerDisp.classList.add('tie')
         tieState.classList.add('show');
     }
     else{
