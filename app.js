@@ -169,6 +169,10 @@ let startGameOver = (buttonParent) => {
     pieces.forEach(piece => {
         piece.remove();      
     });
+    let columns = document.querySelectorAll('.column');
+    columns.forEach(column => {
+        column.classList.remove('no-room');      
+    });
     currPlayer = 0; 
     lastPlayer = 1;
     buttonParent.classList.remove('show');   
