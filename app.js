@@ -160,6 +160,7 @@ let startGameOver = (buttonParent) => {
     board = [];
     playerDisp.innerText = 'Blue';
     playerDisp.classList.add('blue-player');
+    playerDisp.classList.remove('tie');
     for(let y = 0; y < boardHeight; y++){
         board.push([]);
         for(let x = 0; x < boardWidth; x++){
